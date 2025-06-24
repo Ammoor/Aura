@@ -9,7 +9,7 @@ class ApiResponseFormat
         $response = [
             'statusCode' => $responseCode,
             'message' => $responseMessage,
-            'clientData' => $responseData,
+            'userData' => $responseData,
         ];
         return response()->json($response, $responseCode);
     }

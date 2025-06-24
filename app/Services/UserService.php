@@ -14,10 +14,7 @@ class UserService
     }
     public function logIn(array $userData)
     {
-        $user = auth()->attempt(['email' => $userData['email'], 'password' => $userData['password']]) ? auth()->user() : null;
-        if ($user) {
-            $user->createToken('user_token')->plainTextToken;
-        }
+        return auth()->attempt(['email' => $userData['email'], 'password' => $userData['password']]) ? auth()->user()->createToken('user_token')->plainTextToken : null;
     }
     public function register(array $userData)
     {

@@ -17,9 +17,12 @@ class UserController extends Controller
     }
     public function login(UserLogInRequest $request)
     {
-        // $userToken['userToken'] = $this->userService->logIn($request->validated());
-        $this->userService->logIn($request->validated());
-        return ApiResponseFormat::successResponse(200, 'User logged in successfully.', $userToken);
+        $attemptUser =  $this->userService->logIn($request->validated());
+        if ($attemptUser) {
+            $userToken['userToken'] = $this->userService->logIn($request->validated());
+            return ApiResponseFormat::successResponse(200, 'User logged in successfully.', $userToken);
+        }
+        return ApiResponseFormat::failedResponse(404,'User credentials does not match DB records.');
     }
     public function register(UserRegisterRequest $request)
     {
