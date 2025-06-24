@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 class ApiResponseFormat
 {
-    public static function successResponse($responseCode, $responseMessage, $responseData)
+    public static function successResponse($responseCode, $responseMessage, $responseData = '')
     {
         $response = [
             'statusCode' => $responseCode,
@@ -13,7 +13,7 @@ class ApiResponseFormat
         ];
         return response()->json($response, $responseCode);
     }
-    public static function failedResponse($responseCode, $responseMessage, $responseErrors)
+    public static function failedResponse($responseCode, $responseMessage, $responseErrors = '')
     {
         $response = [
             'statusCode' => $responseCode,
