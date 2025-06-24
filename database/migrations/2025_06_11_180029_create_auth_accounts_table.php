@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('auth_accounts', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users');
+            $table->string('provider_id');
+            $table->enum('provider', ['google', 'github', 'microsoft', 'x']);
             $table->timestamps();
         });
     }
