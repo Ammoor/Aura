@@ -48,4 +48,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function authAccounts()
+    {
+        return $this->hasMany(AuthAccount::class,'user_id','id');
+    }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users');
             $table->string('provider_id');
-            $table->enum('provider', ['google', 'github', 'microsoft', 'x']);
+            $table->enum('provider', ['google', 'github']);
             $table->timestamps();
         });
     }

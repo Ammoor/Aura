@@ -10,4 +10,8 @@ class UserRepository
     {
         return User::create($userData);
     }
+    public function getUserByEmail($userEmail)
+    {
+        return User::where('email',$userEmail)->first();
+    }
 }
