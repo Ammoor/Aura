@@ -28,7 +28,8 @@ class AuthAccountController extends Controller
             return ApiResponseFormat::failedResponse(401, 'Authentication failed.');
         }
         $user->provider_name = $request->provider_name;
-        $userToken['userToken'] = $this->userService->authAccountUser($user);
-        return ApiResponseFormat::successResponse(200, 'User authenticated successfully.',$userToken);
+        $token = $this->userService->authAccountUser($user);
+        // return ApiResponseFormat::successResponse(200, 'User authenticated successfully.',$userToken);
+        return redirect()->away("aura://callback?token={$token}");
     }
 }
