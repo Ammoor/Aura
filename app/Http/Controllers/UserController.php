@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Helpers\ApiResponseFormat;
 use App\Http\Requests\UserLogInRequest;
 use App\Http\Requests\UserRegisterRequest;
+use App\Http\Requests\UserUpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Services\UserService;
 
 class UserController extends Controller
@@ -22,7 +24,7 @@ class UserController extends Controller
             $userToken['userToken'] = $this->userService->logIn($request->validated());
             return ApiResponseFormat::successResponse(200, 'User logged in successfully.', $userToken);
         }
-        return ApiResponseFormat::failedResponse(404,'User credentials does not match DB records.');
+        return ApiResponseFormat::failedResponse(404, 'User credentials does not match DB records.');
     }
     public function register(UserRegisterRequest $request)
     {
@@ -33,5 +35,20 @@ class UserController extends Controller
     {
         $this->userService->logOut();
         return ApiResponseFormat::successResponse(200, 'User logged out successfully.');
+    }
+    public function getUserData()
+    {
+        $user = $this->userService->getUserData();
+        return ApiResponseFormat::successResponse(200, 'User data returned successfully.', new UserResource($user));
+    }
+    public function updateUserData(UserUpdateRequest $request)
+    {
+        $this->userService->updateUserData($request->validated());
+        return ApiResponseFormat::successResponse(200, 'User data updated successfully.');
+    }
+    public function deleteUserData()
+    {
+        $this->userService->deleteUserData();
+        return ApiResponseFormat::successResponse(200, 'User deleted successfully.');
     }
 }

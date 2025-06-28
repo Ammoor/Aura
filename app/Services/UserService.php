@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\UserRepository;
 use App\Repositories\AuthAccountRepository;
 use Illuminate\Support\Facades\Hash;
+use App\Helpers\MediaHelper;
 
 class UserService
 {
@@ -50,10 +51,27 @@ class UserService
         if (array_key_exists('password', $userData)) {
             $userData['password'] = Hash::make($userData['password']);
         }
+        $userData['profile_image_path'] = 'profile-images/default_profile_image.jpg';
         return $this->userRepository->register($userData)->createToken('user_token')->plainTextToken;
     }
     public function logOut()
     {
         return auth()->user()->currentAccessToken()->delete();
+    }
+    public function getUserData()
+    {
+        return $this->userRepository->getUserData();
+    }
+    public function updateUserData($userData)
+    {
+        $authUser = $this->userRepository->getUserData();
+        if (array_key_exists('profile_image', $userData)) {
+            $userData['profile_image_path'] = MediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile-images');
+        }
+        return $this->userRepository->updateUserData($userData);
+    }
+    public function deleteUserData()
+    {
+        return $this->userRepository->deleteUserData();
     }
 }

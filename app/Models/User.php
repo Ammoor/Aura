@@ -19,6 +19,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'profile_image_path',
         'first_name',
         'last_name',
         'email',
@@ -50,6 +51,6 @@ class User extends Authenticatable
     }
     public function authAccounts()
     {
-        return $this->hasMany(AuthAccount::class,'user_id','id');
+        return $this->hasMany(AuthAccount::class, 'user_id', 'id');
     }
 }

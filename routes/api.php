@@ -7,6 +7,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::controller(UserController::class)->group(function () {
 
+        Route::get('user', 'getUserData');
+
+        /**
+         * We used the POST method here instead of PUT/PATCH for the update because Postman form-data body does not parse it natively.
+         */
+
+        Route::post('user', 'updateUserData');
+
+        Route::delete('user', 'deleteUserData');
+
         Route::post('logout', 'logout');
     });
 });
