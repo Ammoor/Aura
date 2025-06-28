@@ -4,9 +4,10 @@ namespace App\Services;
 
 use App\Repositories\UserRepository;
 use App\Repositories\AuthAccountRepository;
+use App\Helpers\LocalMediaHelper;
+use App\Helpers\S3MediaHelper;;
+
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use App\Helpers\MediaHelper;
 
 class UserService
 {
@@ -63,16 +64,13 @@ class UserService
     {
         return $this->userRepository->getUserData();
     }
-    private function uploadProfileImage($profileImage, $profileImagePath) // Upload the images to the AWS S3 disk for production.
-    {
-        return Storage::disk('s3')->put($profileImagePath, file_get_contents($profileImage), 'public');
-    }
     public function updateUserData($userData)
     {
         $authUser = $this->userRepository->getUserData();
         if (array_key_exists('profile_image', $userData)) {
-            $userData['profile_image_path'] = MediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile-images');
-            $this->uploadProfileImage($userData['profile_image'], $userData['profile_image_path']);
+            
+            $userData['profile_image_path'] = LocalMediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile-images');
+            S3MediaHelper::store($userData['profile_image'], $userData['profile_image_path']);
         }
         return $this->userRepository->updateUserData($userData);
     }

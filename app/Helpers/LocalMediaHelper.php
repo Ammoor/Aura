@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
-class MediaHelper
+class LocalMediaHelper
 {
     public static function store(UploadedFile $media, string $directory, string $disk = 'public')
     {
@@ -58,8 +58,10 @@ class MediaHelper
     }
     public static function update(UploadedFile $media, string $oldPath, string $directory, string $disk = 'public')
     {
-        // Delete old file
-        self::delete($oldPath, $disk);
+        if ($oldPath !== 'profile-images/default_profile_image.jpg') {
+            // Delete old file
+            self::delete($oldPath, $disk);
+        }
 
         // Store new file
         return self::store($media, $directory, $disk);
