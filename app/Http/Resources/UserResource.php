@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class UserResource extends JsonResource
 {
@@ -15,7 +16,7 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'userProfileImage' => asset('storage/' . $this->profile_image_path),
+            'userProfileImage' => Storage::disk('s3')->url($this->profile_image_path),
             'userFirstName' => $this->first_name,
             'userLastName' => $this->last_name,
             'userEmail' => $this->email,
