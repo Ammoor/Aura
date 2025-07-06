@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DocumentController;
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -18,6 +19,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('user', 'deleteUserData');
 
         Route::post('logout', 'logout');
+    });
+
+    Route::controller(DocumentController::class)->group(function () {
+
+        Route::post('documents', 'uploadDocument');
+
+        Route::get('documents/{document_id}', 'getDocument');
+
+        Route::get('documents', 'getDocuments');
     });
 });
 
