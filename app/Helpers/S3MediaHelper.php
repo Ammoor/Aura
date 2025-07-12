@@ -30,4 +30,17 @@ class S3MediaHelper
         }
         return true; // If file doesn't exist, consider it deleted.
     }
+    public static function getDirectoryFiles(string $directory)
+    {
+        return Storage::disk('s3')->allFiles($directory);
+    }
+    public static function deleteDirectoryFiles(string $directory)
+    {
+        $directoryFiles = self::getDirectoryFiles($directory);
+        return Storage::disk('s3')->delete($directoryFiles);
+    }
+    public static function getBucketFiles()
+    {
+        return Storage::disk('s3')->allFiles();
+    }
 }
