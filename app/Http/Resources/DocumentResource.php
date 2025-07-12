@@ -8,6 +8,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class DocumentResource extends JsonResource
 {
+    private string $appName;
+    public function __construct()
+    {
+        $this->appName = config('app.name');
+    }
     /**
      * Transform the resource into an array.
      *
@@ -17,7 +22,7 @@ class DocumentResource extends JsonResource
     {
         return [
             'documentName' => $this->name,
-            'document' => Storage::disk('s3')->url($this->local_path)
+            'document' => Storage::disk('s3')->url($this->appName . $this->local_path)
         ];
     }
 }
