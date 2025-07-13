@@ -74,7 +74,7 @@ class UserService
         if (array_key_exists('profile_image', $userData)) {
 
             $userData['profile_image_path'] = LocalMediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile-images');
-            S3MediaHelper::store($userData['profile_image'], $this->appName . $userData['profile_image_path']);
+            S3MediaHelper::store($userData['profile_image'], $this->appName .'/'. $userData['profile_image_path']);
         }
         return $this->userRepository->updateUserData($userData);
     }

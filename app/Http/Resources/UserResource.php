@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Storage;
 class UserResource extends JsonResource
 {
     private string $appName;
-    public function __construct()
+    public function __construct($resource)
     {
+        parent::__construct($resource);
         $this->appName = config('app.name');
     }
     /**
@@ -21,7 +22,7 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'userProfileImage' => Storage::disk('s3')->url($this->appName . $this->profile_image_path),
+            'userProfileImage' => Storage::disk('s3')->url($this->appName . '/' . $this->profile_image_path),
             'userFirstName' => $this->first_name,
             'userLastName' => $this->last_name,
             'userEmail' => $this->email,
