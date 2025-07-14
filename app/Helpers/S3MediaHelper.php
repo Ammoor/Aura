@@ -8,9 +8,9 @@ use Illuminate\Http\UploadedFile;
 
 class S3MediaHelper
 {
-    public static function store(UploadedFile $media, string $mediaPath, string $disk = 'public')
+    public static function store(UploadedFile $media, string $mediaPath)
     {
-        return Storage::disk('s3')->put($mediaPath, file_get_contents($media), $disk);
+        return Storage::disk('s3')->put($mediaPath, file_get_contents($media));
     }
     public static function update(UploadedFile $media, string $oldMediaPath, string $newMediaPath)
     {
