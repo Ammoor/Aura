@@ -56,15 +56,10 @@ class LocalMediaHelper
 
         return $createdRecords;
     }
-    public static function update(UploadedFile $media, string $oldPath, string $directory, string $disk = 'public')
+    public static function update(UploadedFile $media, string $oldPath, string $directory)
     {
-        if ($oldPath !== 'profile-images/default_profile_image.jpg') {
-            // Delete old file
-            self::delete($oldPath, $disk);
-        }
-
-        // Store new file
-        return self::store($media, $directory, $disk);
+        self::delete($oldPath);
+        return self::store($media, $directory);
     }
     public static function delete(string $path, string $disk = 'public'): bool
     {

@@ -73,8 +73,15 @@ class UserService
         $authUser = $this->userRepository->getUserData();
         if (array_key_exists('profile_image', $userData)) {
 
-            $userData['profile_image_path'] = LocalMediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile-images');
-            S3MediaHelper::store($userData['profile_image'], $this->appName .'/'. $userData['profile_image_path']);
+            if ($authUser->profile_image_path !== 'profile-images/default_profile_image.jpg') {
+
+                $userData['profile_image_path'] = LocalMediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile-images');
+                S3MediaHelper::update($userData['profile_image'], $this->appName . '/' . $authUser->profile_image_path, $this->appName . '/' . $userData['profile_image_path']);
+            } else {
+
+                $userData['profile_image_path'] = LocalMediaHelper::store($userData['profile_image'], 'profile-images');
+                S3MediaHelper::store($userData['profile_image'], $this->appName . '/' . $userData['profile_image_path']);
+            }
         }
         return $this->userRepository->updateUserData($userData);
     }

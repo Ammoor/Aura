@@ -17,8 +17,8 @@ class DocumentService
     }
     public function uploadDocument(array $documentData)
     {
-        $documentData['local_path'] = LocalMediaHelper::store($documentData['document'], 'documents');
         $documentData['name'] = ' ';
+        $documentData['local_path'] = LocalMediaHelper::store($documentData['document'], 'documents');
         S3MediaHelper::store($documentData['document'], $this->appName . '/' . $documentData['local_path']);
         return $this->documentRepository->uploadDocument($documentData);
     }
