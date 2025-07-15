@@ -42,6 +42,7 @@ class UserService
             'last_name' => $userNameParts[1] ?? '',
             'email' => $userData->getEmail(),
             'has_auth_account' => true,
+            'profile_image_path' => 'profile-images/default_profile_image.jpg',
         ];
         $user = $this->userRepository->register($userAttributes);
         $authAccountData['user_id'] = $user->id;
