@@ -6,20 +6,20 @@ use App\Helpers\S3MediaHelper;
 use App\Helpers\LocalMediaHelper;
 use App\Repositories\UserRepository;
 use App\Repositories\AuthAccountRepository;
-use App\Mail\UserEmailConfirmationMail;
+use App\Services\MailService;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Exception;
 
 class UserService
 {
     private UserRepository $userRepository;
     private AuthAccountRepository $authAccountRepository;
-    private string $appName;
-    public function __construct(UserRepository $userRepository, AuthAccountRepository $authAccountRepository)
+    private MailService $mailService;
+    private string $appName, $defaultProfileImagePath = 'profile-images/default_profile_image.jpg';
+    public function __construct(UserRepository $userRepository, AuthAccountRepository $authAccountRepository, MailService $mailService)
     {
         $this->userRepository = $userRepository;
         $this->authAccountRepository = $authAccountRepository;
+        $this->mailService = $mailService;
         $this->appName = config('app.name');
     }
     public function authAccountUser($userData)
@@ -42,7 +42,7 @@ class UserService
             'last_name' => $userNameParts[1] ?? '',
             'email' => $userData->getEmail(),
             'has_auth_account' => true,
-            'profile_image_path' => 'profile-images/default_profile_image.jpg',
+            'profile_image_path' => $this->defaultProfileImagePath,
         ];
         $user = $this->userRepository->register($userAttributes);
         $authAccountData['user_id'] = $user->id;
@@ -55,10 +55,11 @@ class UserService
     }
     public function register(array $userData)
     {
+        $this->mailService->sendVerificationMail($userData);
         if (array_key_exists('password', $userData)) {
             $userData['password'] = Hash::make($userData['password']);
         }
-        $userData['profile_image_path'] = 'profile-images/default_profile_image.jpg';
+        $userData['profile_image_path'] = $this->defaultProfileImagePath;
         return $this->userRepository->register($userData)->createToken('user_token')->plainTextToken;
     }
     public function logOut()
@@ -74,7 +75,7 @@ class UserService
         $authUser = $this->userRepository->getUserData();
         if (array_key_exists('profile_image', $userData)) {
 
-            if ($authUser->profile_image_path !== 'profile-images/default_profile_image.jpg') {
+            if ($authUser->profile_image_path !== $this->defaultProfileImagePath) {
 
                 $userData['profile_image_path'] = LocalMediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile-images');
                 S3MediaHelper::update($userData['profile_image'], $this->appName . '/' . $authUser->profile_image_path, $this->appName . '/' . $userData['profile_image_path']);

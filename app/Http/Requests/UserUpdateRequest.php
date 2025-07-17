@@ -24,8 +24,8 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'profile_image' => ['sometimes', 'required', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:5120'],
-            'first_name' => ['sometimes', 'required', 'string', 'max:100'],
-            'last_name' => ['sometimes', 'required', 'string', 'max:100'],
+            'first_name' => ['sometimes', 'required', 'alpha', 'max:100'],
+            'last_name' => ['sometimes', 'required', 'alpha', 'max:100'],
             'email' => ['sometimes', 'required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'password' =>  [
                 'sometimes',

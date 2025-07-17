@@ -3,6 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\MailController;
+use App\Http\Middleware\ApiKeyMiddleware;
+
+// Route::middleware(ApiKeyMiddleware::class)->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -37,3 +41,7 @@ Route::controller(UserController::class)->group(function () {
 
     Route::post('register', 'register');
 });
+
+Route::post('email/verify', [MailController::class, 'verifyEmail']);
+
+// });

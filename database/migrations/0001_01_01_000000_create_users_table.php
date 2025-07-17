@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('last_name', 100);
             $table->string('email')->unique();
             $table->string('password')->nullable();
-            $table->boolean('has_auth_account')->default(false); // Has no auth account by default.
+            $table->boolean('has_auth_account')->default(false);
+            $table->boolean('is_email_verified')->default(false);
             $table->timestamps();
         });
 
