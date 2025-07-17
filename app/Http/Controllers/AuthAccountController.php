@@ -29,9 +29,6 @@ class AuthAccountController extends Controller
         }
         $user->provider_name = $request->provider_name;
         $token = $this->userService->authAccountUser($user);
-        // return ApiResponseFormat::successResponse(200, 'User authenticated successfully.',$userToken);
-        // return redirect()->away("aura://callback?token={$token}");
-        // return redirect()->away("https://aura.laravel.cloud/auth/callback?token={$token}");
         return redirect()->away("https://aura.laravel.cloud/auth/callback?token={$token}");
     }
 }

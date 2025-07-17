@@ -22,7 +22,7 @@ class AuthAccountsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'provider_name' => ['required', 'in:google,github'],
+            'provider_name' => ['required', 'in:google,github,discord'],
         ];
     }
     public function prepareForValidation()
