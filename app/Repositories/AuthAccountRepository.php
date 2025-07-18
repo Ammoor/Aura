@@ -2,16 +2,16 @@
 
 namespace App\Repositories;
 
-use App\Models\AuthAccount;
+use App\Models\User;
 
 class AuthAccountRepository
 {
-    public function addAuthAccount($authAccountData)
+    public function addAuthAccount(array $authAccountData, User $user)
     {
-        return AuthAccount::create($authAccountData);
+        return $user->authAccounts()->create($authAccountData);
     }
-    public function getAuthAccount($providerId)
+    public function getAuthAccount(string $providerId, User $user)
     {
-        return AuthAccount::where('provider_id', $providerId)->first();
+        return $user->authAccounts()->where('provider_id', $providerId)->first();
     }
 }

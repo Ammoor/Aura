@@ -27,8 +27,7 @@ class AuthAccountController extends Controller
         } catch (Exception $e) {
             return ApiResponseFormat::failedResponse(401, 'Authentication failed.');
         }
-        $user->provider_name = $request->provider_name;
-        $token = $this->userService->authAccountUser($user);
+        $token = $this->userService->authAccountUser($user, $request->provider_name);
         return redirect()->away("https://aura.laravel.cloud/auth/callback?token={$token}");
     }
 }

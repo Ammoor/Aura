@@ -22,18 +22,21 @@ class UserService
         $this->mailService = $mailService;
         $this->appName = config('app.name');
     }
-    public function authAccountUser($userData)
+    public function authAccountUser($userData, $providerName)
     {
         $authAccountData['provider_id'] = $userData->getId();
-        $authAccountData['provider'] = $userData->provider_name;
+        $authAccountData['provider'] = $providerName;
 
-        $isUserExists = $this->userRepository->getUserByEmail($userData->getEmail());
-        if ($isUserExists) {
-            $isAuthAccountExists = $this->authAccountRepository->getAuthAccount($authAccountData['provider_id']);
-            if (!$isAuthAccountExists) {
-                $this->authAccountRepository->addAuthAccount($authAccountData);
+        $user = $this->userRepository->getUserByEmail($userData->getEmail());
+        if ($user) {
+            $authAccount = $this->authAccountRepository->getAuthAccount($authAccountData['provider_id'], $user);
+            if (!$authAccount) {
+                $this->authAccountRepository->addAuthAccount($authAccountData, $user);
+                if (!$user->has_auth_account) {
+                    $user->update(['has_auth_account' => true]);
+                }
             }
-            return $isUserExists->createToken('user_token')->plainTextToken;
+            return $user->createToken('user_token')->plainTextToken;
         }
 
         $userNameParts = explode(' ', $userData->getName());
@@ -45,8 +48,7 @@ class UserService
             'profile_image_path' => $this->defaultProfileImagePath,
         ];
         $user = $this->userRepository->register($userAttributes);
-        $authAccountData['user_id'] = $user->id;
-        $this->authAccountRepository->addAuthAccount($authAccountData);
+        $this->authAccountRepository->addAuthAccount($authAccountData, $user);
         return $user->createToken('user_token')->plainTextToken;
     }
     public function logIn(array $userData)
