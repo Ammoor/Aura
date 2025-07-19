@@ -4,12 +4,13 @@ namespace App\Helpers;
 
 class ApiResponseFormat
 {
-    public static function successResponse($responseCode, $responseMessage, $responseData = '')
+    public static function successResponse($responseCode, $responseMessage, $responseData = '', $responseMeta = [])
     {
         $response = [
             'statusCode' => $responseCode,
             'message' => $responseMessage,
             'data' => $responseData,
+            'metaData' => $responseMeta
         ];
         return response()->json($response, $responseCode);
     }

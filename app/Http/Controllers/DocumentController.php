@@ -28,6 +28,6 @@ class DocumentController extends Controller
     public function getDocuments()
     {
         $documents = $this->documentService->getDocuments();
-        return ApiResponseFormat::successResponse(200, 'Documents data returned successfully.', DocumentResource::collection($documents));
+        return ApiResponseFormat::successResponse(200, 'Documents data returned successfully.', DocumentResource::collection($documents->items()), $documents->nextPageUrl());
     }
 }
