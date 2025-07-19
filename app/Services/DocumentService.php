@@ -4,22 +4,18 @@ namespace App\Services;
 
 use App\Repositories\DocumentRepository;
 use App\Helpers\S3MediaHelper;
-use App\Helpers\LocalMediaHelper;
 
 class DocumentService
 {
     private DocumentRepository $documentRepository;
-    private string $appName;
     public function __construct(DocumentRepository $documentRepository)
     {
         $this->documentRepository = $documentRepository;
-        $this->appName = config('app.name');
     }
     public function uploadDocument(array $documentData)
     {
         $documentData['name'] = ' ';
-        $documentData['local_path'] = LocalMediaHelper::store($documentData['document'], 'documents');
-        S3MediaHelper::store($documentData['document'], $this->appName . '/' . $documentData['local_path']);
+        $documentData['local_path'] = S3MediaHelper::store($documentData['document'], 'documents');
         return $this->documentRepository->uploadDocument($documentData);
     }
     public function getDocument(int $documentId)

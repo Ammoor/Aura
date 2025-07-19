@@ -8,14 +8,18 @@ use Illuminate\Http\UploadedFile;
 
 class S3MediaHelper
 {
-    public static function store(UploadedFile $media, string $mediaPath)
+    public static function store(UploadedFile $media, string $directory)
     {
-        return Storage::disk('s3')->put($mediaPath, file_get_contents($media));
+        $appName = config('app.name');
+        $name = time() . '_' . uniqid() . '.' . $media->getClientOriginalExtension();
+        $path = "{$appName}/{$directory}/{$name}";
+        Storage::disk('s3')->put($path, file_get_contents($media));
+        return $path;
     }
-    public static function update(UploadedFile $media, string $oldMediaPath, string $newMediaPath)
+    public static function update(UploadedFile $media, string $oldMediaPath, string $directory)
     {
         self::delete($oldMediaPath);
-        return self::store($media, $newMediaPath);
+        return self::store($media, $directory);
     }
     public static function delete(string $mediaPath)
     {

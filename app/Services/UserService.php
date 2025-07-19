@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Helpers\S3MediaHelper;
-use App\Helpers\LocalMediaHelper;
 use App\Repositories\UserRepository;
 use App\Repositories\AuthAccountRepository;
 use App\Services\MailService;
@@ -14,13 +13,12 @@ class UserService
     private UserRepository $userRepository;
     private AuthAccountRepository $authAccountRepository;
     private MailService $mailService;
-    private string $appName, $defaultProfileImagePath = 'profile-images/default_profile_image.jpg';
+    private string $defaultProfileImagePath = 'profile-images/default_profile_image.jpg';
     public function __construct(UserRepository $userRepository, AuthAccountRepository $authAccountRepository, MailService $mailService)
     {
         $this->userRepository = $userRepository;
         $this->authAccountRepository = $authAccountRepository;
         $this->mailService = $mailService;
-        $this->appName = config('app.name');
     }
     public function authAccountUser($userData, $providerName)
     {
@@ -78,13 +76,9 @@ class UserService
         if (array_key_exists('profile_image', $userData)) {
 
             if ($authUser->profile_image_path !== $this->defaultProfileImagePath) {
-
-                $userData['profile_image_path'] = LocalMediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile-images');
-                S3MediaHelper::update($userData['profile_image'], $this->appName . '/' . $authUser->profile_image_path, $this->appName . '/' . $userData['profile_image_path']);
+                $userData['profile_image_path'] = S3MediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile_images');
             } else {
-
-                $userData['profile_image_path'] = LocalMediaHelper::store($userData['profile_image'], 'profile-images');
-                S3MediaHelper::store($userData['profile_image'], $this->appName . '/' . $userData['profile_image_path']);
+                $userData['profile_image_path'] = S3MediaHelper::store($userData['profile_image'], 'profile_images');
             }
         }
         return $this->userRepository->updateUserData($userData);
