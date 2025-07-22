@@ -1,7 +1,7 @@
 @component('mail::message')
     # Dear, {{ $userData['first_name'] }}
 
-    Thanks for joining __Aura__ – where your experience is our priority.
+    Thanks for joining **Aura** – where your experience is our priority.
 
     Thank you for signing up. To complete your registration, please verify your email address by entering the verification
     code below:

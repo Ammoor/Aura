@@ -2,18 +2,19 @@
 
 namespace App\Services;
 
-use App\Helpers\S3MediaHelper;
-use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 use App\Repositories\AuthAccountRepository;
 use App\Services\MailService;
-use Illuminate\Support\Facades\Hash;
+use App\Repositories\UserRepository;
+use App\Helpers\S3MediaHelper;
 
 class UserService
 {
     private UserRepository $userRepository;
     private AuthAccountRepository $authAccountRepository;
     private MailService $mailService;
-    private string $defaultProfileImagePath = 'profile-images/default_profile_image.jpg';
+    private string $defaultProfileImagePath = 'Aura/profile-images/default_profile_image.jpg';
     public function __construct(UserRepository $userRepository, AuthAccountRepository $authAccountRepository, MailService $mailService)
     {
         $this->userRepository = $userRepository;
@@ -55,12 +56,9 @@ class UserService
     }
     public function register(array $userData)
     {
-        $this->mailService->sendVerificationMail($userData);
-        if (array_key_exists('password', $userData)) {
-            $userData['password'] = Hash::make($userData['password']);
-        }
-        $userData['profile_image_path'] = $this->defaultProfileImagePath;
-        return $this->userRepository->register($userData)->createToken('user_token')->plainTextToken;
+        $userData['password'] = Hash::make($userData['password']);
+        Cache::put('user_temp_data', $userData, now()->addDays(7));
+        return $this->mailService->sendVerificationMail($userData);
     }
     public function logOut()
     {

@@ -27,8 +27,8 @@ class UserController extends Controller
     }
     public function register(UserRegisterRequest $request)
     {
-        $userToken['userToken'] = $this->userService->register($request->validated());
-        return ApiResponseFormat::successResponse(201, 'User registered successfully.', $userToken);
+        $this->userService->register($request->validated());
+        return ApiResponseFormat::successResponse(200, 'Confirmation email sent.');
     }
     public function logOut()
     {

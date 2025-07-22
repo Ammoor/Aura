@@ -42,6 +42,10 @@ Route::controller(UserController::class)->group(function () {
     Route::post('register', 'register');
 });
 
-Route::post('email/verify', [MailController::class, 'verifyEmail']);
+Route::controller(MailController::class)->group(function () {
 
+    Route::post('email/verify', 'verifyEmail');
+
+    Route::post('email/resend', 'resendEmail');
+});
 // });

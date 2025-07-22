@@ -18,8 +18,9 @@ class MailController extends Controller
     {
         $isUserVerified = $this->mailService->verifyEmail($request->validated());
         if ($isUserVerified) {
-            return ApiResponseFormat::successResponse(200, 'Email verified successfully.');
+            return ApiResponseFormat::successResponse(201, 'Email verified and user registered successfully.',['userToken' => $isUserVerified]);
         }
         return ApiResponseFormat::failedResponse(422, 'Invalid or expired code.');
     }
+    public function resendEmail() {}
 }
