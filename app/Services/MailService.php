@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Validation\ValidationException;
 use App\Mail\UserEmailConfirmationMail;
 use App\Mail\RegistrationWelcomeMail;
 use App\Repositories\PendingMailVerificationRepository;
@@ -40,6 +41,15 @@ class MailService
         return Mail::to($userData['email'])->send(
             new UserEmailConfirmationMail($userData, $pendingData['verification_code'], $this->verificationCodeExpireAfter)
         );
+    }
+    public function resendVerificationMail($userEmail)
+    {
+        try {
+            $userData = Cache::get($userEmail);
+            return $this->sendVerificationMail($userData);
+        } catch (Exception $e) {
+            throw ValidationException::withMessages(['email' => 'The selected email is invalid.']);
+        }
     }
     public function verifyEmail($userData)
     {

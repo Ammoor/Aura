@@ -57,7 +57,7 @@ class UserService
     public function register(array $userData)
     {
         $userData['password'] = Hash::make($userData['password']);
-        Cache::put('user_temp_data', $userData, now()->addDays(7));
+        Cache::put($userData['email'], $userData, now()->addDays(7));
         return $this->mailService->sendVerificationMail($userData);
     }
     public function logOut()
@@ -74,9 +74,9 @@ class UserService
         if (array_key_exists('profile_image', $userData)) {
 
             if ($authUser->profile_image_path !== $this->defaultProfileImagePath) {
-                $userData['profile_image_path'] = S3MediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile_images');
+                $userData['profile_image_path'] = S3MediaHelper::update($userData['profile_image'], $authUser->profile_image_path, 'profile-images');
             } else {
-                $userData['profile_image_path'] = S3MediaHelper::store($userData['profile_image'], 'profile_images');
+                $userData['profile_image_path'] = S3MediaHelper::store($userData['profile_image'], 'profile-images');
             }
         }
         return $this->userRepository->updateUserData($userData);

@@ -8,7 +8,10 @@ class PendingMailVerificationRepository
 {
     public function updateOrCreate($pendingData)
     {
-        return PendingMailVerification::updateOrCreate($pendingData);
+        return PendingMailVerification::updateOrCreate(['email' => $pendingData['email']], [
+            'verification_code' => $pendingData['verification_code'],
+            'expires_at' => $pendingData['expires_at']
+        ]);
     }
     public function get($pendingData)
     {
