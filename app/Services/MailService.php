@@ -22,10 +22,11 @@ class MailService
         $this->pendingMailVerificationRepository = $pendingMailVerificationRepository;
         $this->userRepository = $userRepository;
     }
-    private function completeRegistration()
+    private function completeRegistration($userEmail)
     {
-        $userData = Cache::get('user_temp_data');
+        $userData = Cache::get($userEmail);
         $userData['profile_image_path'] = $this->defaultProfileImagePath;
+        Cache::delete($userEmail);
         return $this->userRepository->register($userData)->createToken('user_token')->plainTextToken;
     }
     private function generateRandomCode()
@@ -59,7 +60,7 @@ class MailService
             Mail::to($userData['email'])->send(
                 new RegistrationWelcomeMail()
             );
-            return $this->completeRegistration();
+            return $this->completeRegistration($userData['email']);
         }
         return $isUserVerified;
     }
