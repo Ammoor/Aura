@@ -42,7 +42,7 @@ class UserEmailConfirmationMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.user-email-confirmation',
+            view: 'mail.user-email-confirmation',
             with: [
                 'userData' => $this->userData,
                 'verificationCode' => $this->verificationCode,

@@ -4,6 +4,9 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AccountRemovalMail;
+use App\Mail\UserLoginNotificationMail;
 use App\Repositories\AuthAccountRepository;
 use App\Services\MailService;
 use App\Repositories\UserRepository;
@@ -52,7 +55,11 @@ class UserService
     }
     public function logIn(array $userData)
     {
-        return auth()->attempt(['email' => $userData['email'], 'password' => $userData['password']]) ? auth()->user()->createToken('user_token')->plainTextToken : null;
+        $user = auth()->attempt(['email' => $userData['email'], 'password' => $userData['password']]) ? auth()->user() : null;
+        Mail::to($user->email)->send(
+            new UserLoginNotificationMail($user)
+        );
+        return $user->createToken('user_token')->plainTextToken;
     }
     public function register(array $userData)
     {
@@ -83,6 +90,10 @@ class UserService
     }
     public function deleteUserData()
     {
+        $user = $this->userRepository->getUserData();
+        Mail::to($user->email)->send(
+            new AccountRemovalMail($user)
+        );
         return $this->userRepository->deleteUserData();
     }
 }

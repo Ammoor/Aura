@@ -9,15 +9,15 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RegistrationWelcomeMail extends Mailable
+class UserLoginNotificationMail extends Mailable
 {
     use Queueable, SerializesModels;
-    private array $userData;
+    private $userData;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(array $userData)
+    public function __construct($userData)
     {
         $this->userData = $userData;
     }
@@ -28,7 +28,7 @@ class RegistrationWelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to our system !',
+            subject: 'Login Notification Mail',
         );
     }
 
@@ -38,10 +38,8 @@ class RegistrationWelcomeMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.registration-welcome',
-            with: [
-                'userData' => $this->userData,
-            ],
+            view: 'mail.user-login-notification',
+            with: ['userData' => $this->userData,],
         );
     }
 

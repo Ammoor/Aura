@@ -26,7 +26,7 @@ class MailService
     {
         $userData = Cache::get($userEmail);
         $userData['profile_image_path'] = $this->defaultProfileImagePath;
-        Cache::delete($userEmail);
+        Cache::forget($userEmail);
         return $this->userRepository->register($userData)->createToken('user_token')->plainTextToken;
     }
     private function generateRandomCode()
@@ -57,8 +57,9 @@ class MailService
         $isUserVerified = $this->pendingMailVerificationRepository->get($userData);
         if ($isUserVerified) {
             $this->pendingMailVerificationRepository->delete($userData);
+            $userCachedData = Cache::get($userData['email']);
             Mail::to($userData['email'])->send(
-                new RegistrationWelcomeMail()
+                new RegistrationWelcomeMail($userCachedData)
             );
             return $this->completeRegistration($userData['email']);
         }
