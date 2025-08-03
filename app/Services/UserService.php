@@ -91,6 +91,7 @@ class UserService
     public function deleteUserData()
     {
         $user = $this->userRepository->getUserData();
+        $user->tokens()->delete();
         Mail::to($user->email)->send(
             new AccountRemovalMail($user)
         );
